@@ -160,6 +160,25 @@ Service Binding
 
 5. Save the comment
 
+## Technical Notes
+
+### Database Table Field Definitions
+
+The database tables use standard ABAP field definitions where:
+- `INTLEN` (Internal Length): Storage length in bytes, including Unicode encoding overhead
+- `LENG` (Display Length): Actual character length for display
+- For CHAR fields, INTLEN is typically 2x LENG due to Unicode (UTF-16) encoding
+
+This is standard SAP behavior and not a data truncation issue.
+
+### Behavior Implementation
+
+The behavior implementation class `ZBP_I_DESK_TICKET` is minimal by design, as this is a managed RAP scenario where SAP provides automatic CRUD operations. The class can be extended with:
+- Early numbering for custom ID generation
+- Validations for business rules
+- Determinations for field calculations
+- Actions for custom business logic
+
 ## Development
 
 ### Object Naming Convention
