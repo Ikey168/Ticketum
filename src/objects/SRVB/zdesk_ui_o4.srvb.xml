@@ -1,0 +1,4 @@
+@EndUserText.label: 'Deskulo Service Binding'
+define service binding ZDESK_UI_O4 {
+  expose ZDESK_SD as 'Deskulo';
+}

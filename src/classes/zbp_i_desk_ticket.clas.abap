@@ -1,0 +1,10 @@
+CLASS zbp_i_desk_ticket DEFINITION
+  PUBLIC
+  ABSTRACT
+  FINAL FOR BEHAVIOR OF zi_desk_ticket.
+
+ENDCLASS.
+
+CLASS zbp_i_desk_ticket IMPLEMENTATION.
+
+ENDCLASS.

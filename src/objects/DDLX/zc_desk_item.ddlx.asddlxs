@@ -1,0 +1,84 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Item',
+    typeNamePlural: 'Items',
+    title: {
+      type: #STANDARD,
+      value: 'ItemId'
+    }
+  }
+}
+annotate view ZC_DESK_ITEM with
+{
+  @UI.facet: [
+    {
+      id: 'ItemDetails',
+      purpose: #STANDARD,
+      type: #IDENTIFICATION_REFERENCE,
+      label: 'Item Details',
+      position: 10
+    }
+  ]
+  
+  @UI.hidden: true
+  ItemUuid;
+  
+  @UI.hidden: true
+  TicketUuid;
+  
+  @UI: {
+    lineItem: [{ position: 10, importance: #HIGH }],
+    identification: [{ position: 10 }]
+  }
+  ItemId;
+  
+  @UI: {
+    lineItem: [{ position: 20, importance: #HIGH }],
+    identification: [{ position: 20 }]
+  }
+  ItemType;
+  
+  @UI: {
+    lineItem: [{ position: 30, importance: #HIGH }],
+    identification: [{ position: 30 }]
+  }
+  @UI.multiLineText: true
+  Description;
+  
+  @UI: {
+    lineItem: [{ position: 40, importance: #MEDIUM }],
+    identification: [{ position: 40 }]
+  }
+  Status;
+  
+  @UI: {
+    lineItem: [{ position: 50, importance: #MEDIUM }],
+    identification: [{ position: 50 }]
+  }
+  Quantity;
+  
+  @UI: {
+    identification: [{ position: 60 }]
+  }
+  CreatedBy;
+  
+  @UI: {
+    lineItem: [{ position: 60, importance: #LOW }],
+    identification: [{ position: 70 }]
+  }
+  CreatedAt;
+  
+  @UI: {
+    identification: [{ position: 80 }]
+  }
+  LastChangedBy;
+  
+  @UI: {
+    identification: [{ position: 90 }]
+  }
+  LastChangedAt;
+  
+  @UI.hidden: true
+  LocalLastChangedAt;
+}

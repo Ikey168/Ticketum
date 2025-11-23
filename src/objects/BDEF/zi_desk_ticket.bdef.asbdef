@@ -1,0 +1,96 @@
+managed implementation in class zbp_i_desk_ticket unique;
+strict ( 2 );
+
+define behavior for ZI_DESK_TICKET alias Ticket
+persistent table zdesk_ticket
+lock master
+authorization master ( instance )
+etag master LocalLastChangedAt
+{
+  create;
+  update;
+  delete;
+  
+  field ( readonly ) TicketUuid;
+  field ( numbering : managed, readonly ) TicketId;
+  
+  association _Item { create; }
+  association _Comment { create; }
+  
+  mapping for zdesk_ticket
+  {
+    TicketUuid = ticket_uuid;
+    TicketId = ticket_id;
+    Title = title;
+    Description = description;
+    Status = status;
+    Priority = priority;
+    Category = category;
+    Requester = requester;
+    Assignee = assignee;
+    CreatedBy = created_by;
+    CreatedAt = created_at;
+    LastChangedBy = last_changed_by;
+    LastChangedAt = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}
+
+define behavior for ZI_DESK_ITEM alias Item
+persistent table zdesk_item
+lock dependent by _Ticket
+authorization dependent by _Ticket
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  
+  field ( readonly ) ItemUuid, TicketUuid;
+  field ( numbering : managed, readonly ) ItemId;
+  
+  association _Ticket;
+  
+  mapping for zdesk_item
+  {
+    ItemUuid = item_uuid;
+    TicketUuid = ticket_uuid;
+    ItemId = item_id;
+    ItemType = item_type;
+    Description = description;
+    Status = status;
+    Quantity = quantity;
+    CreatedBy = created_by;
+    CreatedAt = created_at;
+    LastChangedBy = last_changed_by;
+    LastChangedAt = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}
+
+define behavior for ZI_DESK_COMMENT alias Comment
+persistent table zdesk_comment
+lock dependent by _Ticket
+authorization dependent by _Ticket
+etag master LocalLastChangedAt
+{
+  update;
+  delete;
+  
+  field ( readonly ) CommentUuid, TicketUuid;
+  
+  association _Ticket;
+  
+  mapping for zdesk_comment
+  {
+    CommentUuid = comment_uuid;
+    TicketUuid = ticket_uuid;
+    CommentText = comment_text;
+    CommentType = comment_type;
+    IsInternal = is_internal;
+    CreatedBy = created_by;
+    CreatedAt = created_at;
+    LastChangedBy = last_changed_by;
+    LastChangedAt = last_changed_at;
+    LocalLastChangedAt = local_last_changed_at;
+  }
+}

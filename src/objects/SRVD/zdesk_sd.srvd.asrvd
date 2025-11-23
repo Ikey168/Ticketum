@@ -1,0 +1,6 @@
+@EndUserText.label: 'Deskulo Service Definition'
+define service ZDESK_SD {
+  expose ZC_DESK_TICKET as Ticket;
+  expose ZC_DESK_ITEM as Item;
+  expose ZC_DESK_COMMENT as Comment;
+}

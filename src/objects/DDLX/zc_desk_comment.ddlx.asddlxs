@@ -1,0 +1,73 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Comment',
+    typeNamePlural: 'Comments',
+    title: {
+      type: #STANDARD,
+      value: 'CommentType'
+    }
+  }
+}
+annotate view ZC_DESK_COMMENT with
+{
+  @UI.facet: [
+    {
+      id: 'CommentDetails',
+      purpose: #STANDARD,
+      type: #IDENTIFICATION_REFERENCE,
+      label: 'Comment Details',
+      position: 10
+    }
+  ]
+  
+  @UI.hidden: true
+  CommentUuid;
+  
+  @UI.hidden: true
+  TicketUuid;
+  
+  @UI: {
+    lineItem: [{ position: 10, importance: #HIGH }],
+    identification: [{ position: 10 }]
+  }
+  @UI.multiLineText: true
+  CommentText;
+  
+  @UI: {
+    lineItem: [{ position: 20, importance: #MEDIUM }],
+    identification: [{ position: 20 }]
+  }
+  CommentType;
+  
+  @UI: {
+    lineItem: [{ position: 30, importance: #MEDIUM }],
+    identification: [{ position: 30 }]
+  }
+  IsInternal;
+  
+  @UI: {
+    lineItem: [{ position: 40, importance: #MEDIUM }],
+    identification: [{ position: 40 }]
+  }
+  CreatedBy;
+  
+  @UI: {
+    lineItem: [{ position: 50, importance: #LOW }],
+    identification: [{ position: 50 }]
+  }
+  CreatedAt;
+  
+  @UI: {
+    identification: [{ position: 60 }]
+  }
+  LastChangedBy;
+  
+  @UI: {
+    identification: [{ position: 70 }]
+  }
+  LastChangedAt;
+  
+  @UI.hidden: true
+  LocalLastChangedAt;
+}

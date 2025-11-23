@@ -1,0 +1,131 @@
+@Metadata.layer: #CORE
+@UI: {
+  headerInfo: {
+    typeName: 'Ticket',
+    typeNamePlural: 'Tickets',
+    title: {
+      type: #STANDARD,
+      value: 'TicketId'
+    },
+    description: {
+      type: #STANDARD,
+      value: 'Title'
+    }
+  },
+  presentationVariant: [{
+    sortOrder: [{
+      by: 'CreatedAt',
+      direction: #DESC
+    }],
+    visualizations: [{
+      type: #AS_LINEITEM
+    }]
+  }]
+}
+annotate view ZC_DESK_TICKET with
+{
+  @UI.facet: [
+    {
+      id: 'TicketDetails',
+      purpose: #STANDARD,
+      type: #IDENTIFICATION_REFERENCE,
+      label: 'Ticket Details',
+      position: 10
+    },
+    {
+      id: 'Items',
+      purpose: #STANDARD,
+      type: #LINEITEM_REFERENCE,
+      label: 'Items',
+      position: 20,
+      targetElement: '_Item'
+    },
+    {
+      id: 'Comments',
+      purpose: #STANDARD,
+      type: #LINEITEM_REFERENCE,
+      label: 'Comments',
+      position: 30,
+      targetElement: '_Comment'
+    }
+  ]
+  
+  @UI.hidden: true
+  TicketUuid;
+  
+  @UI: {
+    lineItem: [{ position: 10, importance: #HIGH }],
+    identification: [{ position: 10 }],
+    selectionField: [{ position: 10 }]
+  }
+  TicketId;
+  
+  @UI: {
+    lineItem: [{ position: 20, importance: #HIGH }],
+    identification: [{ position: 20 }]
+  }
+  Title;
+  
+  @UI: {
+    identification: [{ position: 30 }]
+  }
+  @UI.multiLineText: true
+  Description;
+  
+  @UI: {
+    lineItem: [{ position: 30, importance: #HIGH }],
+    identification: [{ position: 40 }],
+    selectionField: [{ position: 20 }]
+  }
+  Status;
+  
+  @UI: {
+    lineItem: [{ position: 40, importance: #MEDIUM }],
+    identification: [{ position: 50 }],
+    selectionField: [{ position: 30 }]
+  }
+  Priority;
+  
+  @UI: {
+    lineItem: [{ position: 50, importance: #MEDIUM }],
+    identification: [{ position: 60 }],
+    selectionField: [{ position: 40 }]
+  }
+  Category;
+  
+  @UI: {
+    lineItem: [{ position: 60, importance: #MEDIUM }],
+    identification: [{ position: 70 }]
+  }
+  Requester;
+  
+  @UI: {
+    lineItem: [{ position: 70, importance: #MEDIUM }],
+    identification: [{ position: 80 }]
+  }
+  Assignee;
+  
+  @UI: {
+    identification: [{ position: 90 }]
+  }
+  CreatedBy;
+  
+  @UI: {
+    lineItem: [{ position: 80, importance: #LOW }],
+    identification: [{ position: 100 }]
+  }
+  CreatedAt;
+  
+  @UI: {
+    identification: [{ position: 110 }]
+  }
+  LastChangedBy;
+  
+  @UI: {
+    identification: [{ position: 120 }]
+  }
+  LastChangedAt;
+  
+  @UI.hidden: true
+  LocalLastChangedAt;
+}

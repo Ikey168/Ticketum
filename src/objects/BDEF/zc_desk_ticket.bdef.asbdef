@@ -1,0 +1,28 @@
+projection;
+strict ( 2 );
+
+define behavior for ZC_DESK_TICKET alias Ticket
+{
+  use create;
+  use update;
+  use delete;
+  
+  use association _Item { create; }
+  use association _Comment { create; }
+}
+
+define behavior for ZC_DESK_ITEM alias Item
+{
+  use update;
+  use delete;
+  
+  use association _Ticket;
+}
+
+define behavior for ZC_DESK_COMMENT alias Comment
+{
+  use update;
+  use delete;
+  
+  use association _Ticket;
+}

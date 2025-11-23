@@ -1,0 +1,25 @@
+# IDE specific files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS specific files
+.DS_Store
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.bak
+*.log
+
+# abapGit specific
+.abapgit/
+
+# Node modules (if any tools are used)
+node_modules/
+package-lock.json
+
+# Build artifacts
+*.class
