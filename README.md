@@ -1,2 +1,1 @@
-# Ticketum
-Deskulo is a lean IT service desk built on S/4HANA using the ABAP RESTful Application Programming Model (RAP), CDS, and a Fiori Elements UI for managing support tickets, items, and comments.
+Ticketum is a minimalist IT service desk application for S/4HANA. It showcases a modern ABAP stack using the ABAP RESTful Application Programming Model (RAP), CDS view entities, and an OData V4/Fiori Elements List Report + Object Page. Ticketum manages IT support tickets with a simple lifecycle (Open → In Progress → Resolved → Closed), optional work items, and a comment log, designed as a clean-core extension that can be implemented end-to-end by a single developer.
