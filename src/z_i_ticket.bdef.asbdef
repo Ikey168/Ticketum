@@ -21,6 +21,9 @@ early numbering
   determination setDefaults on modify { create; }
   determination updateAudit on modify { update; }
 
+  validation validateHeader on save { create; update; }
+  validation validateClosedStatus on save { update; }
+
   action ( features : instance ) acceptTicket result [1] $self;
   action ( features : instance ) resolveTicket result [1] $self;
   action ( features : instance ) closeTicket result [1] $self;

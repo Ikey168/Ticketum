@@ -10,6 +10,12 @@ CLASS lhc_Ticket DEFINITION INHERITING FROM cl_abap_behavior_handler.
     METHODS updateAudit FOR DETERMINATION Ticket~updateAudit
       IMPORTING keys FOR Ticket.
 
+    METHODS validateHeader FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Ticket~validateHeader.
+
+    METHODS validateClosedStatus FOR VALIDATE ON SAVE
+      IMPORTING keys FOR Ticket~validateClosedStatus.
+
     METHODS get_instance_authorizations FOR INSTANCE AUTHORIZATION
       IMPORTING keys REQUEST requested_authorizations FOR Ticket RESULT result.
 
@@ -85,6 +91,48 @@ CLASS lhc_Ticket IMPLEMENTATION.
                         ( %tky = key-%tky
                           ChangedAt = lv_ts
                           ChangedBy = sy-uname ) ).
+  ENDMETHOD.
+
+  METHOD validateHeader.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Title RequesterName RequesterEmail ) WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Title IS INITIAL.
+        APPEND VALUE #( %tky = ticket-%tky ) TO failed-ticket.
+        APPEND VALUE #( %tky = ticket-%tky
+                        %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                      text = 'Title is required' ) ) TO reported-ticket.
+      ENDIF.
+
+      IF ticket-RequesterName IS INITIAL AND ticket-RequesterEmail IS INITIAL.
+        APPEND VALUE #( %tky = ticket-%tky ) TO failed-ticket.
+        APPEND VALUE #( %tky = ticket-%tky
+                        %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                      text = 'Either Requester Name or Email is required' ) ) TO reported-ticket.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD validateClosedStatus.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Status ) WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '04'. " Closed
+        SELECT SINGLE status FROM zticket_hdr WHERE ticket_id = @ticket-TicketID INTO @DATA(db_status).
+        IF sy-subrc = 0 AND db_status = '04'.
+           APPEND VALUE #( %tky = ticket-%tky ) TO failed-ticket.
+           APPEND VALUE #( %tky = ticket-%tky
+                           %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                         text = 'Cannot edit a closed ticket. Reopen it first.' ) ) TO reported-ticket.
+        ENDIF.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
   METHOD get_instance_authorizations.
