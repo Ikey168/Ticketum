@@ -36,6 +36,28 @@ CLASS lhc_Ticket DEFINITION INHERITING FROM cl_abap_behavior_handler.
 
 ENDCLASS.
 
+CLASS lhc_TicketItem DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    METHODS validateParentStatus FOR VALIDATE ON SAVE
+      IMPORTING keys FOR TicketItem~validateParentStatus.
+
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR TicketItem RESULT result.
+
+ENDCLASS.
+
+CLASS lhc_TicketComment DEFINITION INHERITING FROM cl_abap_behavior_handler.
+  PRIVATE SECTION.
+
+    METHODS validateParentStatus FOR VALIDATE ON SAVE
+      IMPORTING keys FOR TicketComment~validateParentStatus.
+
+    METHODS get_instance_features FOR INSTANCE FEATURES
+      IMPORTING keys REQUEST requested_features FOR TicketComment RESULT result.
+
+ENDCLASS.
+
 CLASS lhc_Ticket IMPLEMENTATION.
 
   METHOD earlynumbering_create.
@@ -300,6 +322,88 @@ CLASS lhc_Ticket IMPLEMENTATION.
     result = VALUE #( FOR result_ticket IN result_tickets
                       ( %tky = result_ticket-%tky
                         %param = result_ticket ) ).
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lhc_TicketItem IMPLEMENTATION.
+
+  METHOD validateParentStatus.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Status )
+        WITH VALUE #( FOR key IN keys ( TicketID = key-TicketID ) )
+      RESULT DATA(tickets).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '04'.
+        LOOP AT keys INTO DATA(key) WHERE TicketID = ticket-TicketID.
+          APPEND VALUE #( %tky = key-%tky ) TO failed-ticketitem.
+          APPEND VALUE #( %tky = key-%tky
+                          %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                        text = 'Cannot modify items of a closed ticket.' ) ) TO reported-ticketitem.
+        ENDLOOP.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Status )
+        WITH VALUE #( FOR key IN keys ( TicketID = key-TicketID ) )
+      RESULT DATA(tickets).
+
+    LOOP AT keys INTO DATA(key).
+      READ TABLE tickets INTO DATA(ticket) WITH KEY TicketID = key-TicketID.
+      IF sy-subrc = 0.
+        APPEND VALUE #( %tky = key-%tky
+                        %update = COND #( WHEN ticket-Status = '04' THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled )
+                        %delete = COND #( WHEN ticket-Status = '04' THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled )
+                      ) TO result.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+ENDCLASS.
+
+CLASS lhc_TicketComment IMPLEMENTATION.
+
+  METHOD validateParentStatus.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Status )
+        WITH VALUE #( FOR key IN keys ( TicketID = key-TicketID ) )
+      RESULT DATA(tickets).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '04'.
+        LOOP AT keys INTO DATA(key) WHERE TicketID = ticket-TicketID.
+          APPEND VALUE #( %tky = key-%tky ) TO failed-ticketcomment.
+          APPEND VALUE #( %tky = key-%tky
+                          %msg = new_message_with_text( severity = if_abap_behv_message=>severity-error
+                                                        text = 'Cannot modify comments of a closed ticket.' ) ) TO reported-ticketcomment.
+        ENDLOOP.
+      ENDIF.
+    ENDLOOP.
+  ENDMETHOD.
+
+  METHOD get_instance_features.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Status )
+        WITH VALUE #( FOR key IN keys ( TicketID = key-TicketID ) )
+      RESULT DATA(tickets).
+
+    LOOP AT keys INTO DATA(key).
+      READ TABLE tickets INTO DATA(ticket) WITH KEY TicketID = key-TicketID.
+      IF sy-subrc = 0.
+        APPEND VALUE #( %tky = key-%tky
+                        %update = COND #( WHEN ticket-Status = '04' THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled )
+                        %delete = COND #( WHEN ticket-Status = '04' THEN if_abap_behv=>fc-o-disabled ELSE if_abap_behv=>fc-o-enabled )
+                      ) TO result.
+      ENDIF.
+    ENDLOOP.
   ENDMETHOD.
 
 ENDCLASS.

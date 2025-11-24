@@ -53,10 +53,12 @@ lock dependent by _Ticket
 authorization dependent by _Ticket
 //etag master <field_name>
 {
-  update;
-  delete;
+  update ( features : instance );
+  delete ( features : instance );
   field ( readonly ) TicketID;
   association _Ticket;
+
+  validation validateParentStatus on save { create; update; }
 
   mapping for zticket_itm
   {
@@ -76,12 +78,14 @@ lock dependent by _Ticket
 authorization dependent by _Ticket
 //etag master <field_name>
 {
-  update;
-  delete;
+  update ( features : instance );
+  delete ( features : instance );
   field ( readonly ) TicketID;
   field ( numbering : managed, readonly ) CommentID;
   field ( readonly ) CreatedAt, CreatedBy;
   association _Ticket;
+
+  validation validateParentStatus on save { create; update; }
 
   mapping for zticket_cmt
   {
