@@ -139,18 +139,167 @@ CLASS lhc_Ticket IMPLEMENTATION.
   ENDMETHOD.
 
   METHOD get_instance_features.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        FIELDS ( Status ) WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    result = VALUE #( FOR ticket IN tickets
+                      ( %tky = ticket-%tky
+                        %action-acceptTicket  = COND #( WHEN ticket-Status = '01' THEN if_abap_behv=>fc-o-enabled ELSE if_abap_behv=>fc-o-disabled )
+                        %action-resolveTicket = COND #( WHEN ticket-Status = '02' THEN if_abap_behv=>fc-o-enabled ELSE if_abap_behv=>fc-o-disabled )
+                        %action-closeTicket   = COND #( WHEN ticket-Status = '03' THEN if_abap_behv=>fc-o-enabled ELSE if_abap_behv=>fc-o-disabled )
+                        %action-reopenTicket  = COND #( WHEN ticket-Status = '03' OR ticket-Status = '04' THEN if_abap_behv=>fc-o-enabled ELSE if_abap_behv=>fc-o-disabled )
+                      ) ).
   ENDMETHOD.
 
   METHOD acceptTicket.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    GET TIME STAMP FIELD DATA(lv_ts).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '01'. " Open
+        MODIFY ENTITIES OF Z_I_Ticket IN LOCAL MODE
+          ENTITY Ticket
+            UPDATE
+              FIELDS ( Status AssignedAgent )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              Status = '02'
+                              AssignedAgent = COND #( WHEN ticket-AssignedAgent IS INITIAL THEN sy-uname ELSE ticket-AssignedAgent ) ) )
+          ENTITY Ticket
+            CREATE BY \_Comments
+              FIELDS ( CommentText CreatedAt CreatedBy )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              %target = VALUE #( ( %cid = 'ACCEPT' && ticket-TicketID
+                                                   CommentText = 'Ticket accepted.'
+                                                   CreatedAt = lv_ts
+                                                   CreatedBy = sy-uname ) ) ) ).
+      ENDIF.
+    ENDLOOP.
+
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(result_tickets).
+
+    result = VALUE #( FOR result_ticket IN result_tickets
+                      ( %tky = result_ticket-%tky
+                        %param = result_ticket ) ).
   ENDMETHOD.
 
   METHOD resolveTicket.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    GET TIME STAMP FIELD DATA(lv_ts).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '02'. " In Progress
+        MODIFY ENTITIES OF Z_I_Ticket IN LOCAL MODE
+          ENTITY Ticket
+            UPDATE
+              FIELDS ( Status )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              Status = '03' ) )
+          ENTITY Ticket
+            CREATE BY \_Comments
+              FIELDS ( CommentText CreatedAt CreatedBy )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              %target = VALUE #( ( %cid = 'RESOLVE' && ticket-TicketID
+                                                   CommentText = 'Ticket resolved.'
+                                                   CreatedAt = lv_ts
+                                                   CreatedBy = sy-uname ) ) ) ).
+      ENDIF.
+    ENDLOOP.
+
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(result_tickets).
+
+    result = VALUE #( FOR result_ticket IN result_tickets
+                      ( %tky = result_ticket-%tky
+                        %param = result_ticket ) ).
   ENDMETHOD.
 
   METHOD closeTicket.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    GET TIME STAMP FIELD DATA(lv_ts).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '03'. " Resolved
+        MODIFY ENTITIES OF Z_I_Ticket IN LOCAL MODE
+          ENTITY Ticket
+            UPDATE
+              FIELDS ( Status )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              Status = '04' ) )
+          ENTITY Ticket
+            CREATE BY \_Comments
+              FIELDS ( CommentText CreatedAt CreatedBy )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              %target = VALUE #( ( %cid = 'CLOSE' && ticket-TicketID
+                                                   CommentText = 'Ticket closed.'
+                                                   CreatedAt = lv_ts
+                                                   CreatedBy = sy-uname ) ) ) ).
+      ENDIF.
+    ENDLOOP.
+
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(result_tickets).
+
+    result = VALUE #( FOR result_ticket IN result_tickets
+                      ( %tky = result_ticket-%tky
+                        %param = result_ticket ) ).
   ENDMETHOD.
 
   METHOD reopenTicket.
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(tickets).
+
+    GET TIME STAMP FIELD DATA(lv_ts).
+
+    LOOP AT tickets INTO DATA(ticket).
+      IF ticket-Status = '03' OR ticket-Status = '04'. " Resolved or Closed
+        MODIFY ENTITIES OF Z_I_Ticket IN LOCAL MODE
+          ENTITY Ticket
+            UPDATE
+              FIELDS ( Status )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              Status = '01' ) )
+          ENTITY Ticket
+            CREATE BY \_Comments
+              FIELDS ( CommentText CreatedAt CreatedBy )
+              WITH VALUE #( ( %tky = ticket-%tky
+                              %target = VALUE #( ( %cid = 'REOPEN' && ticket-TicketID
+                                                   CommentText = 'Ticket reopened.'
+                                                   CreatedAt = lv_ts
+                                                   CreatedBy = sy-uname ) ) ) ).
+      ENDIF.
+    ENDLOOP.
+
+    READ ENTITIES OF Z_I_Ticket IN LOCAL MODE
+      ENTITY Ticket
+        ALL FIELDS WITH CORRESPONDING #( keys )
+      RESULT DATA(result_tickets).
+
+    result = VALUE #( FOR result_ticket IN result_tickets
+                      ( %tky = result_ticket-%tky
+                        %param = result_ticket ) ).
   ENDMETHOD.
 
 ENDCLASS.
