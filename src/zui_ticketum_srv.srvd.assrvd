@@ -1,0 +1,6 @@
+@EndUserText.label: 'Ticketum Service Definition'
+define service ZUI_TICKETUM_SRV {
+  expose Z_I_Ticket as Ticket;
+  expose Z_I_TicketItem as TicketItem;
+  expose Z_I_TicketComment as TicketComment;
+}
