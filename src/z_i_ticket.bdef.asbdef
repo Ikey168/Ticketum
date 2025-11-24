@@ -5,6 +5,7 @@ define behavior for Z_I_Ticket alias Ticket
 persistent table zticket_hdr
 lock master
 authorization master ( instance )
+early numbering
 //etag master <field_name>
 {
   create;
@@ -13,8 +14,12 @@ authorization master ( instance )
   association _Items { create; }
   association _Comments { create; }
 
-  field ( numbering : managed, readonly ) TicketID;
+  field ( readonly ) TicketID;
   field ( readonly ) CreatedAt, CreatedBy, ChangedAt, ChangedBy;
+  field ( readonly ) Status;
+
+  determination setDefaults on modify { create; }
+  determination updateAudit on modify { update; }
 
   action ( features : instance ) acceptTicket result [1] $self;
   action ( features : instance ) resolveTicket result [1] $self;
