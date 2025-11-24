@@ -1,0 +1,86 @@
+managed implementation in class zbp_i_ticket unique;
+strict ( 2 );
+
+define behavior for Z_I_Ticket alias Ticket
+persistent table zticket_hdr
+lock master
+authorization master ( instance )
+//etag master <field_name>
+{
+  create;
+  update;
+  delete;
+  association _Items { create; }
+  association _Comments { create; }
+
+  field ( numbering : managed, readonly ) TicketID;
+  field ( readonly ) CreatedAt, CreatedBy, ChangedAt, ChangedBy;
+
+  action ( features : instance ) acceptTicket result [1] $self;
+  action ( features : instance ) resolveTicket result [1] $self;
+  action ( features : instance ) closeTicket result [1] $self;
+  action ( features : instance ) reopenTicket result [1] $self;
+
+  mapping for zticket_hdr
+  {
+    TicketID = ticket_id;
+    Title = title;
+    Description = description;
+    RequesterUser = requester_user;
+    RequesterName = requester_name;
+    RequesterEmail = requester_email;
+    Priority = priority;
+    Status = status;
+    AssignedAgent = assigned_agent;
+    CreatedAt = created_at;
+    CreatedBy = created_by;
+    ChangedAt = changed_at;
+    ChangedBy = changed_by;
+  }
+}
+
+define behavior for Z_I_TicketItem alias TicketItem
+persistent table zticket_itm
+lock dependent by _Ticket
+authorization dependent by _Ticket
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) TicketID;
+  association _Ticket;
+
+  mapping for zticket_itm
+  {
+    TicketID = ticket_id;
+    ItemNo = item_no;
+    Description = description;
+    Status = status;
+    AssignedAgent = assigned_agent;
+    PlannedEffortHr = planned_effort_hr;
+    ActualEffortHr = actual_effort_hr;
+  }
+}
+
+define behavior for Z_I_TicketComment alias TicketComment
+persistent table zticket_cmt
+lock dependent by _Ticket
+authorization dependent by _Ticket
+//etag master <field_name>
+{
+  update;
+  delete;
+  field ( readonly ) TicketID;
+  field ( numbering : managed, readonly ) CommentID;
+  field ( readonly ) CreatedAt, CreatedBy;
+  association _Ticket;
+
+  mapping for zticket_cmt
+  {
+    TicketID = ticket_id;
+    CommentID = comment_id;
+    CommentText = comment_text;
+    CreatedAt = created_at;
+    CreatedBy = created_by;
+  }
+}
