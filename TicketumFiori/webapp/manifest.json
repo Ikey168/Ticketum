@@ -23,12 +23,24 @@
           "odataVersion": "4.0"
         }
       }
+    },
+    "crossNavigation": {
+      "inbounds": {
+        "Ticketum-display": {
+          "semanticObject": "Ticketum",
+          "action": "display",
+          "title": "{{appTitle}}",
+          "info": "{{appDescription}}",
+          "subTitle": "{{appDescription}}",
+          "icon": "sap-icon://ticket"
+        }
+      }
     }
   },
   "sap.ui": {
     "technology": "UI5",
     "icons": {
-      "icon": "",
+      "icon": "sap-icon://ticket",
       "favIcon": "",
       "phone": "",
       "phone@2": "",
