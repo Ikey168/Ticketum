@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Opa tests for Ticketum</title>
+	<meta http-equiv='X-UA-Compatible' content='IE=edge' />
+	<meta charset="UTF-8">
+
+	<script id="sap-ui-bootstrap"
+		src="https://ui5.sap.com/resources/sap-ui-core.js"
+		data-sap-ui-theme='sap_horizon'
+		data-sap-ui-resourceroots='{
+			"ticketum.fiori.test.integration": "./",
+			"ticketum.fiori.app": "../../"
+		}'
+		data-sap-ui-animation="false"
+		data-sap-ui-compatVersion="edge"
+		data-sap-ui-async="true">
+	</script>
+
+	<link rel="stylesheet" type="text/css" href="https://ui5.sap.com/resources/sap/ui/thirdparty/qunit-2.css">
+
+	<script src="https://ui5.sap.com/resources/sap/ui/thirdparty/qunit-2.js"></script>
+	<script src="https://ui5.sap.com/resources/sap/ui/qunit/qunit-junit.js"></script>
+
+	<script>
+		sap.ui.getCore().attachInit(function() {
+			sap.ui.require([
+				"ticketum/fiori/test/integration/AllJourneys"
+			], function() {
+				QUnit.start();
+			});
+		});
+	</script>
+</head>
+<body>
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+</body>
+</html>
