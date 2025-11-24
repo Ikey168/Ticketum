@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<abapGit version="v1.0.0" serializer="LCL_OBJECT_SRVB" serializer_version="v1.0.0">
+ <asx:abap xmlns:asx="http://www.sap.com/abapxml" version="1.0">
+  <asx:values>
+   <SRVB>
+    <NAME>ZUI_TICKETUM_O4</NAME>
+    <DESCRIPTION>Ticketum OData V4 Service Binding</DESCRIPTION>
+    <BINDING_TYPE>ODATA</BINDING_TYPE>
+    <BINDING_TYPE_VERSION>V4</BINDING_TYPE_VERSION>
+    <SERVICE_NAME>ZUI_TICKETUM_SRV</SERVICE_NAME>
+    <IS_LOCAL>X</IS_LOCAL>
+   </SRVB>
+  </asx:values>
+ </asx:abap>
+</abapGit>
